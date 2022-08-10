@@ -7,9 +7,9 @@ class Paises extends BaseController
     public function index()
     {
         $client = \Config\Services::curlrequest([
-            'baseURI' => 'https://api.mercadolibre.com/',
+            'baseURI' => 'https://api.mercadolibre.com',
         ]);
-        $data['paises'] = json_decode($client->get('classified_locations/countries')->getBody());
+        $data['paises'] = json_decode($client->get('sites')->getBody());
 
         // echo "<pre>";
         // print_r($data);
