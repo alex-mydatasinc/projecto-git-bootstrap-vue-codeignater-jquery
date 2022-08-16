@@ -18,7 +18,7 @@
         </ul>
         
         <div class="col">
-            <div class="d-flex flex-column justify-content-start mb-3">
+            <div class="d-flex flex-column mb-3 shadow p-3 bg-light rounded">
                 <h1 class="text-center">{{detalle.name}}</h1>
                 <span class="text-center">Total categorias: {{detalle.total_items_in_this_category}}</span>
                 <img :src="detalle.picture" alt="" class="w-50 p-3 h-25 mx-auto">
