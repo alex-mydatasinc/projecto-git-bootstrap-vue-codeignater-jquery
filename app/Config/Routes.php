@@ -1,7 +1,7 @@
 <?php
 
 namespace Config;
-
+use App\Controllers\CategoriasController;
 // Create a new instance of our RouteCollection class.
 $routes = Services::routes();
 
@@ -31,9 +31,11 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
-$routes->get('paises', 'Paises::index');
+// $routes->get('/', 'Home::index');
+$routes->get('/', 'Paises::index');
 $routes->get('paises', 'Paises::list');
+$routes->post('paises/categorias', 'CategoriasController::get_categorias');
+$routes->post('paises/detalle', 'CategoriasController::get_detalle');
 
 /*
  * --------------------------------------------------------------------
