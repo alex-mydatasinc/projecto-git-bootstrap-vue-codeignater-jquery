@@ -11,3 +11,14 @@
 </head>
 <body>
     
+<ul class="nav justify-content-center">
+    <li class="nav-item">
+        <a class="nav-link active" href="<?= base_url('dashboard/productos') ?>">Productos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="<?= base_url('pais') ?>">Categoria paises</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled link</a>
+    </li>
+</ul>

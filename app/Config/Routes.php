@@ -1,7 +1,8 @@
 <?php
 
 namespace Config;
-use App\Controllers\CategoriasController;
+use App\Controllers\BaseController;
+use App\Controllers\AuthController;
 // Create a new instance of our RouteCollection class.
 $routes = Services::routes();
 
@@ -32,10 +33,15 @@ $routes->setAutoRoute(true);
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 // $routes->get('/', 'Home::index');
-$routes->get('/', 'Paises::index');
-$routes->get('paises', 'Paises::list');
-$routes->post('paises/categorias', 'CategoriasController::get_categorias');
-$routes->post('paises/detalle', 'CategoriasController::get_detalle');
+$routes->get('/pais', 'Paises::index');
+
+$routes->get('paises', 'Paises::list', ['filter' => 'auth']);
+$routes->post('paises/categorias', 'CategoriasController::get_categorias', ['filter' => 'auth']);
+$routes->post('paises/detalle', 'CategoriasController::get_detalle', ['filter' => 'auth']);
+$routes->post('login', 'AuthController::auth_login');
+$routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
+$routes->get('dashboard/productos', 'ProductoController::index', ['filter' => 'auth']);
+$routes->get('dashboard/productos/index', 'ProductoController::productos_user', ['filter' => 'auth']);
 
 /*
  * --------------------------------------------------------------------

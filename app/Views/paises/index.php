@@ -1,14 +1,11 @@
-<style>
-.gap{
-    column-gap: 1rem; /* 2px */
-}
-</style>
+
 <div class="container" id="categoria_vue">
     <div class="row my-3">
         <ul class="list-group col-3" id="paises">
             <li class="list-group-item active">Paises</li>
             <div  v-for="pais in paises" :key="pais.name" >
-                <li class="list-group-item disabled" @click="get_all_categorias(pais.id)" :class="(active_pais==pais.id) ? 'bg-primary text-white' : 'bg-light'">{{pais.name}}</li>
+                <li class="list-group-item disabled" @click="get_all_categorias(pais.id)" 
+                :class="(active_pais==pais.id) ? 'bg-primary text-white' : 'bg-light'">{{pais.name}}</li>
             </div>           
         </ul>
         <ul class="list-group col-3" id="paises">
@@ -21,7 +18,7 @@
             <div class="d-flex flex-column mb-3 shadow p-3 bg-light rounded">
                 <h1 class="text-center">{{detalle.name}}</h1>
                 <span class="text-center">Total categorias: {{detalle.total_items_in_this_category}}</span>
-                <img :src="detalle.picture" alt="" class="w-50 p-3 h-25 mx-auto">
+                <img :src="image" alt="" class="w-50 p-3 h-25 mx-auto">
                 <span>{{detalle.permalink}}</span>
                 <span>{{detalle.date_created}}</span>
             </div>
@@ -65,6 +62,7 @@
                     type: "post",
                     url: "<?php echo base_url('paises/categorias');?>",
                     data: {'id': id},
+                    timeout: 500,
                     dataType: "JSON",
                     success: function (response) {
                         console.log(response.categorias)
@@ -80,6 +78,7 @@
                     type: "post",
                     url: "<?php echo base_url('paises/detalle');?>",
                     data: {'id': id},
+                    timeout: 500,
                     dataType: "JSON",
                     success: function (response) {
                         console.log(response.detalle)
@@ -87,6 +86,16 @@
                     }
                 });
                 categorias.active_categoria= id
+            }
+        },
+        // watch: {
+        //     detalle(newQuestion, oldQuestion) {
+        //         console.log('new: '+newQuestion 'old: '+oldQuestion)
+        //     }
+        // }
+        computed: {
+            image () {
+                return this.detalle['picture']
             }
         },
     })
