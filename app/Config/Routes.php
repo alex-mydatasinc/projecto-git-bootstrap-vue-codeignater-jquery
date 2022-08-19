@@ -32,16 +32,20 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-// $routes->get('/', 'Home::index');
-$routes->get('/pais', 'Paises::index');
-
+$routes->get('/', 'Home::index');
+$routes->post('login', 'AuthController::auth_login');
+$routes->get('login_in', 'AuthController::index');
+$routes->get('/pais', 'Paises::index', ['filter' => 'auth']);
 $routes->get('paises', 'Paises::list', ['filter' => 'auth']);
 $routes->post('paises/categorias', 'CategoriasController::get_categorias', ['filter' => 'auth']);
 $routes->post('paises/detalle', 'CategoriasController::get_detalle', ['filter' => 'auth']);
-$routes->post('login', 'AuthController::auth_login');
 $routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
 $routes->get('dashboard/productos', 'ProductoController::index', ['filter' => 'auth']);
-$routes->get('dashboard/productos/index', 'ProductoController::productos_user', ['filter' => 'auth']);
+$routes->get('dashboard/get_productos', 'ProductoController::get_productos', ['filter' => 'auth']);
+$routes->get('dashboard/productos/Generar', 'ProductoController::productos_user', ['filter' => 'auth']);
+$routes->post('dashboard/productos/update', 'ProductoController::update_productos', ['filter' => 'auth']);
+$routes->post('dashboard/productos/store', 'ProductoController::store_producto', ['filter' => 'auth']);
+$routes->post('dashboard/productos/delete', 'ProductoController::delete_producto', ['filter' => 'auth']);
 
 /*
  * --------------------------------------------------------------------
