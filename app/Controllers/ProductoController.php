@@ -28,7 +28,7 @@ class ProductoController extends BaseController
             'secret' => 'BXQbMgaylwbml72KGRrBtkdQCsATIkAm',
             'user_id' => '833930674'
         ];
-        $token = 'Bearer APP_USR-4332857485021545-081914-411d81cda3998a3353c350e86cd8a845-833930674';
+        $token = 'Bearer APP_USR-4332857485021545-082416-b0112bedcdbf325984cd89c71127dff8-833930674';
         $haeders = [
             'headers' => [
                 'Accept'        => 'application/json',
@@ -36,6 +36,7 @@ class ProductoController extends BaseController
                 'Content-Type' => 'application/json',
             ],
         ];
+        $model->emptyTable('productos');
         $results_user = json_decode($client->get('users/' . $user['user_id'] . '/items/search?limit=1000', $haeders)->getBody());
         $productos = [];
         if ($results_user->results) {
@@ -71,7 +72,7 @@ class ProductoController extends BaseController
     public function get_productos()
     {
         $model = new Producto();
-        $productos = $model->findAll();
+        $productos = $model->where('status', 'active')->findAll();
         return $this->response->setJSON($productos);
     }
     public function store_producto()
@@ -169,7 +170,7 @@ class ProductoController extends BaseController
         $client = \Config\Services::curlrequest([
             'baseURI' => 'https://api.mercadolibre.com',
         ]);
-        $token = 'Bearer APP_USR-4332857485021545-081914-411d81cda3998a3353c350e86cd8a845-833930674';
+        $token = 'Bearer APP_USR-4332857485021545-082408-4c6a6f028a814c48030539ef292a7a0b-833930674';
         $haeders = [
             'Accept'        => 'application/json',
             'Authorization' => $token,

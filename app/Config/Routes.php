@@ -39,6 +39,7 @@ $routes->get('/pais', 'Paises::index', ['filter' => 'auth']);
 $routes->get('paises', 'Paises::list', ['filter' => 'auth']);
 $routes->post('paises/categorias', 'CategoriasController::get_categorias', ['filter' => 'auth']);
 $routes->post('paises/detalle', 'CategoriasController::get_detalle', ['filter' => 'auth']);
+$routes->get('paises/atributos/(:alphanum)', 'CategoriasController::get_atributos/$1', ['filter' => 'auth']);
 $routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
 $routes->get('dashboard/productos', 'ProductoController::index', ['filter' => 'auth']);
 $routes->get('dashboard/get_productos', 'ProductoController::get_productos', ['filter' => 'auth']);

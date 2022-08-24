@@ -1,24 +1,30 @@
 <div id="producto_vue">
-    <div class="d-flex justify-content-between flex-row m-4">
-        <button type="button" class="btn btn-primary" @click="showCreate()">Crear nuevo producto</button>
-        <button type="button" class="btn btn-primary" @click="get_productos_api()">Traer a BD</button>
-    </div>    
     <div class="container">
+        <div class="row m-4">
+            <div>
+                <button type="button" class="btn btn-primary" @click="showCreate()"><i class="fa-duotone fa-plus"></i></button> CREAR PRODUCTO
+            </div>
+
+            <button type="button" class="btn btn-primary" @click="get_productos_api()">Traer a BD</button>
+        </div>
         <div class="row">
-            <div class="col-4 mb-3" v-for="producto in productos" :key="producto.id"  v-if="producto.status != 'closed'">
-                <div class="d-flex flex-column mb-3 shadow p-3 bg-light rounded">
-                    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active" v-for="(img, index) in JSON.parse(producto.pictures)" :key="index">
-                                <img class="d-block w-100" :src="img" alt="First slide">
+            <div class="col-4 mb-3" v-for="(producto, indice) in productos" :key="producto.id">
+                <div class="d-flex flex-column mb-3 shadow p-3 bg-light rounded h-100">
+                    <div :id="'carouselId-'+indice" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner" role="listbox">
+                            <div class="carousel-item" v-for="(img, indice) in JSON.parse(producto.pictures)" :class="(indice == 0) ? 'active':''">
+                                <img class="d-block d-flex w-100" :src="img" alt="First slide" :id="'imgl-'+indice">
+                            </div>
+                            <div class="carousel-item" v-for="(img, index) in JSON.parse(producto.pictures)">
+                                <img class="d-block w-100" :src="img" alt="First slide" :id="'img-'+(index+10)">
                             </div>
                         </div>
-                        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <a class="carousel-control-prev text-primary " :href="'#carouselId-'+indice" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon text-primary" aria-hidden="true"></span>
                             <span class="sr-only">Previous</span>
                         </a>
-                        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <a class="carousel-control-next text-primary" :href="'#carouselId-'+indice" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon text-primary" aria-hidden="true"></span>
                             <span class="sr-only">Next</span>
                         </a>
                     </div>
@@ -27,9 +33,12 @@
 
                     <span>{{producto.condition}}</span>
                     <span>{{producto.city}}</span>
-                    <div class="d-flex justify-content-around">
-                        <a name="" id="" class="btn btn-primary d-flex" href="#" role="button" @click="showEdit(producto)">Mostrar</a>
-                        <a name="" id="" class="btn btn-danger" href="#" role="button" @click="delete_producto(producto.producto_id)">X</a>
+                    <div class="d-flex justify-content-around h-100 d-flex align-items-end">
+                        <div class="row text-primary">
+                            <a class="fa-solid fa-pen-to-square text-sz mx-3 btn btn-primary" href="#" role="button" @click="showEdit(producto)"></a>
+                            <a class="fa-solid fa-trash-can text-sz btn btn btn-danger" href="#" role="button" @click="delete_producto(producto.producto_id)"></a>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -37,9 +46,9 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="d_producto" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+    <div class="modal fade bd-example-modal-lg" id="d_producto" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content w-100">
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <p class="text-success">{{producto.title}}</p>
@@ -48,47 +57,106 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form @submit.prevent="update_producto">
-                        <div class="form-group">
-                          <label for="">Titulo</label>
-                          <input type="text" class="form-control" placeholder="Asignele un titulo" v-model="producto.title">
+                <div class="modal-body w-100">
+                    <form @submit.prevent="update_producto" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="">Titulo</label>
+                                <input type="text" class="form-control" placeholder="Asignele un titulo" v-model="producto.title">
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="">Precio</label>
+                                <input type="number" class="form-control" placeholder="Asignele un titulo" v-model="producto.price">
+                            </div>
                         </div>
-                        <div class="form-group">
-                          <label for="">Precio</label>
-                          <input type="number" class="form-control" placeholder="Asignele un titulo" v-model="producto.price">
-                        </div>
-                        <div>
-                            <div class="form-group">
+                        
+                        <div class="row">
+                            <div class="form-group col-6">
                                 <label for="">condicion</label>
                                 <input type="text" class="form-control" placeholder="Asignele un titulo" v-model="producto.condition">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group col-6">
                                 <label for="">Numero de productos</label>
                                 <input type="number" class="form-control" placeholder="Asignele un titulo" v-model="producto.available_quantity">
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Actualizar</button>
-                        <button type="button" class="btn btn-primary" @click="store_producto()">Crear</button>
+                        <div class="form-group">
+                            <label for="">Imagen</label>
+                            <div class="d-flex flex-row">
+                                <input type="text" id="file" class="form-control mr-1" placeholder="Ingrese imagen" accept="image/*" v-model="add_image">
+                                <button type="button" class="btn btn-primary fa-duotone fa-plus" @click="img()"></button>
+                            </div>
+                        </div>
+                        <!-- <div class="form-group d-flex justify-content-center">
+                            <img id="picture" class="h-50 w-50 rounded" v-for="image in images" :src="image.source">
+                        </div> -->
+                        <h4 class="text-center">Categorias</h4>          
+                        
+                        <div class="row">
+                            <div class="form-group col-4" v-if="categorias.length > 0" v-for=" (i, index) in categorias" :key="i">
+                                <ul class="list-group d-flex bd-highlight overflow">
+                                    <li class="list-group-item bg-success" v-for="categoria in categorias[index]" :key="categoria.id"  @click="Categorias(categoria.id)">{{categoria.name}}</li>
+                                </ul>
+                            </div>
+                            {{categorias}}
+                        </div>
+                        <!-- <div class="form-group" v-for="atributo in atributos.groups" v-if="atributos.groups">
+
+                            <label for="" class="text-success">{{atributo.label}}</label>
+                            <div class="row">
+                                <div class="form-group col-4" v-for="caracteristicas in atributo.components" v-if="validated_campos(caracteristicas.attributes[0].tags)">
+                                    {{caracteristicas.attributes[0].value_type}}
+                                    <label for="">{{caracteristicas.attributes[0]['name']}}</label>
+                                    <select class="form-control" v-if="type_input(caracteristicas.attributes[0]['value_type']) == 'select'">
+                                        <option disabled selected value="">Ingrese {{caracteristicas.attributes[0]['name']}}</option>
+                                        <option v-for="value in caracteristicas.attributes[0]['values']" :value="value.name">{{value.name}}</option>
+                                        {{caracteristicas.attributes[0].units}}
+                                    </select>
+                                    <input :type="type_input(caracteristicas.attributes[0]['value_type'])" v-else class="form-control" :placeholder="'ingrese '+caracteristicas.attributes[0]['name']">                                    
+                                </div>
+                            </div>                           
+
+                        </div> -->
+                        </div>
+                        <button type="submit" class="btn btn-primary" v-if="btn == 0">Actualizar</button>
+                        <button type="button" class="btn btn-primary" @click="store_producto()" v-if="btn == 1">Crear</button>
                     </form>
                 </div>
-                <div class="modal-footer">
+                <!-- <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary">Save</button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
 </div>
 
+
 <script>
+    $(document).ready(function() {
+        $('.carousel').carousel();
+        // $('#file').change(function (e) { 
+        //     e.preventDefault();
+        //     var file = e.target.files[0];
+        //     console.log(file)
+        //     var reader = new FileReader();
+        //     reader.onload = (e) => {
+        //         document.getElementById("picture").setAttribute('src', event.target.result);
+        //     };
+        //     reader.readAsDataURL(file);
+        // });
+    });
     let producto = new Vue({
         el: '#producto_vue',
         data() {
             return {
                 productos: [],
                 producto: [],
-                images: []
+                add_image: '',
+                images: [],
+                btn: '',
+                categorias: [],
+                atributos: [],
             }
         },
         mounted() {
@@ -119,14 +187,16 @@
             showEdit(producto) {
                 $('#d_producto').modal('show')
                 this.producto = producto;
-                // this.images = 
+                this.btn = 0;
             },
-            showCreate(){
+            showCreate() {
                 this.producto = [];
-                $('#d_producto').modal('show')                
+                this.Categorias({id: "MCO"});
+                $('#d_producto').modal('show')
+                this.btn = 1;
             },
-            store_producto(){
-                
+            store_producto() {
+
                 $.ajax({
                     type: "post",
                     url: "<?= base_url('dashboard/productos/store'); ?>",
@@ -137,12 +207,12 @@
                         'condition': producto.producto.condition,
                     },
                     dataType: "json",
-                    success: function (response) {
+                    success: function(response) {
                         console.log(response);
                     }
                 });
             },
-            update_producto(){
+            update_producto() {
                 $.ajax({
                     type: "post",
                     url: "<?= base_url('dashboard/productos/update'); ?>",
@@ -161,25 +231,102 @@
                         // 'marca': producto.producto.marca,
                     },
                     dataType: "json",
-                    success: function (response) {
+                    success: function(response) {
                         console.log(response)
                         location.reload();
                     }
                 });
             },
-            delete_producto(producto_id){
+            delete_producto(producto_id) {
                 $.ajax({
                     type: "post",
-                    url: "<?= base_url('dashboard/productos/delete');?>",
+                    url: "<?= base_url('dashboard/productos/delete'); ?>",
                     data: {
                         'producto_id': producto_id,
                     },
                     dataType: "json",
-                    success: function (response) {
+                    success: function(response) {
                         console.log(response);
                     }
                 });
-            }    
+            },
+            img() {
+                this.images.push('source', this.add_image);
+                this.add_image = '';     
+            },
+            Categorias(id){
+                this.setCategorias = []                
+                $.ajax({
+                    type: "post",
+                    url: "<?= base_url('paises/categorias')?>",
+                    data: id,
+                    dataType: "json",
+                    success: function (response) {
+                        producto.categorias.push(response.categorias)
+                        console.log(response.categorias)
+                    }
+                });
+            },
+            // subCategorias(id){
+            //     this.chilCategorias = []
+            //     $.ajax({
+            //         type: "post",
+            //         url: "<?php echo base_url('paises/detalle');?>",
+            //         data: {'id': id},
+            //         dataType: "JSON",
+            //         success: function (response) {
+            //             console.log(response.detalle)
+            //             producto.setCategorias = response.detalle.children_categories
+            //         }
+            //     });
+            // },
+            // chilSubCategorias(id){
+            //     this.atributos = []
+            //     console.log(id)
+            //     $.ajax({
+            //         type: "post",
+            //         url: "<?php echo base_url('paises/detalle');?>",
+            //         data: {'id': id},
+            //         dataType: "JSON",
+            //         success: function (response) {
+            //             console.log(response.detalle)
+            //             producto.chilCategorias = response.detalle.children_categories
+            //         }
+            //     });
+            // },
+            attrCategorias(id){
+                
+                $.ajax({
+                    type: "get",
+                    url: "<?= base_url('paises/atributos');?>"+"/"+id,
+                    dataType: "JSON",
+                    success: function (response) {
+                        console.log(response.atributos)
+                        producto.atributos = response.atributos
+                    }
+                });
+            },
+            type_input(type){
+                if (type == 'string') {
+                    return 'text'
+                }
+                if (type == 'number' || type == 'number_unit') {
+                    return 'number'
+                }
+                if (type == 'list') {
+                    return 'select'
+                }
+            },
+            validated_campos(valiadate_campos){
+                for (var i = 0; i < valiadate_campos.length; i++) {
+                    if (valiadate_campos[i]  == 'catalog_required' || valiadate_campos[i]  == 'required') {
+                        return true
+                    }else{
+                        return false
+                    }
+                };
+                
+            }
         },
     })
 </script>

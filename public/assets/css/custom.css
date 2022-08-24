@@ -1,0 +1,7 @@
+.text-sz {
+    font-size: 25px;
+}
+.overflow {
+    overflow: auto;
+    height: 10rem;
+}
