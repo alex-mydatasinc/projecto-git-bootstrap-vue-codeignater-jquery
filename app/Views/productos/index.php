@@ -87,36 +87,48 @@
                                 <button type="button" class="btn btn-primary fa-duotone fa-plus" @click="img()"></button>
                             </div>
                         </div>
-                        <!-- <div class="form-group d-flex justify-content-center">
-                            <img id="picture" class="h-50 w-50 rounded" v-for="image in images" :src="image.source">
-                        </div> -->
+                        <div class="form-group d-flex flex-row bd-highlight mb-3 overflow-x">
+                            <div v-for="(image,index) in images" class="position-relative">
+                                <div class="bg-danger px-2 position-absolute rounded-circle text-center d-flex align-items-center" @click="images.splice(index, 1)">x</div>
+                                <img id="picture" class="h-5 shadow-none p-1 bg-light rounded" :src="image.source">
+                            </div>
+                            
+                        </div>
                         <h4 class="text-center">Categorias</h4>          
                         
-                        <div class="row">
-                            <div class="form-group col-4" v-if="categorias.length > 0" v-for=" (i, index) in categorias" :key="i">
+                        <div class="d-flex flex-row bd-highlight mb-3 overflow-x">
+                            <div class="form-group col-4" v-if="categorias.length > 0" v-for=" (i, index) in categorias">
                                 <ul class="list-group d-flex bd-highlight overflow">
-                                    <li class="list-group-item bg-success" v-for="categoria in categorias[index]" :key="categoria.id"  @click="Categorias(categoria.id)">{{categoria.name}}</li>
+                                    <li class="list-group-item bg-success" v-for="(categoria) in categorias[index]" :key="categoria.id"  @click="Categorias(categoria.id, index)">{{categoria.name}}</li>
                                 </ul>
-                            </div>
-                            {{categorias}}
+                            </div>                            
                         </div>
-                        <!-- <div class="form-group" v-for="atributo in atributos.groups" v-if="atributos.groups">
+                        {{producto}}
+                        <div class="form-group" v-for="atributo in atributos.groups" v-if="atributos.groups">
 
                             <label for="" class="text-success">{{atributo.label}}</label>
                             <div class="row">
                                 <div class="form-group col-4" v-for="caracteristicas in atributo.components" v-if="validated_campos(caracteristicas.attributes[0].tags)">
-                                    {{caracteristicas.attributes[0].value_type}}
+                                    <!-- {{caracteristicas.attributes[0].value_type}} -->
                                     <label for="">{{caracteristicas.attributes[0]['name']}}</label>
                                     <select class="form-control" v-if="type_input(caracteristicas.attributes[0]['value_type']) == 'select'">
                                         <option disabled selected value="">Ingrese {{caracteristicas.attributes[0]['name']}}</option>
                                         <option v-for="value in caracteristicas.attributes[0]['values']" :value="value.name">{{value.name}}</option>
                                         {{caracteristicas.attributes[0].units}}
                                     </select>
-                                    <input :type="type_input(caracteristicas.attributes[0]['value_type'])" v-else class="form-control" :placeholder="'ingrese '+caracteristicas.attributes[0]['name']">                                    
+                                    <input :type="type_input(caracteristicas.attributes[0]['value_type'])" v-else 
+                                        class="form-control" 
+                                            :placeholder="'ingrese '+caracteristicas.attributes[0]['name']" 
+                                                :list="'list-value'+index"
+                                                    v-model="get_atributos.name">
+                                                    {{get_atributos}}
+                                    <!-- <datalist :id="'list-value'+index" v-if="caracteristicas.attributes[0]['values']">
+                                        <option v-for="value in caracteristicas.attributes[0]['values']">{{value}}</option>
+                                    </datalist> -->
                                 </div>
                             </div>                           
-
-                        </div> -->
+                        
+                        </div>
                         </div>
                         <button type="submit" class="btn btn-primary" v-if="btn == 0">Actualizar</button>
                         <button type="button" class="btn btn-primary" @click="store_producto()" v-if="btn == 1">Crear</button>
@@ -146,18 +158,29 @@
         //     reader.readAsDataURL(file);
         // });
     });
-    let producto = new Vue({
+    let producto_vue = new Vue({
         el: '#producto_vue',
         data() {
             return {
                 productos: [],
-                producto: [],
+                producto: {
+                    category_id: ''
+                },
                 add_image: '',
                 images: [],
                 btn: '',
                 categorias: [],
                 atributos: [],
+                get_atributos: []
             }
+        },
+        watch: {
+            producto(newValue, oldValue) {
+                console.log('new value: '+newValue+' old value: '+oldValue)
+                // Note: `newValue` will be equal to `oldValue` here
+                // on nested mutations as long as the object itself
+                // hasn't been replaced.
+            },
         },
         mounted() {
             this.get_productos()
@@ -179,7 +202,7 @@
                     url: "<?= base_url('dashboard/get_productos'); ?>",
                     dataType: "json",
                     success: function(response) {
-                        producto.productos = response;
+                        producto_vue.productos = response;
                         console.log(response);
                     }
                 });
@@ -190,21 +213,22 @@
                 this.btn = 0;
             },
             showCreate() {
-                this.producto = [];
-                this.Categorias({id: "MCO"});
+                this.categorias.splice(0, this.categorias.length)
+                this.Categorias("MCO", 0);
                 $('#d_producto').modal('show')
-                this.btn = 1;
+                this.btn = 1;                
             },
             store_producto() {
-
                 $.ajax({
                     type: "post",
                     url: "<?= base_url('dashboard/productos/store'); ?>",
                     data: {
-                        'title': producto.producto.title,
-                        'price': producto.producto.price,
-                        'available_quantity': producto.producto.available_quantity,
-                        'condition': producto.producto.condition,
+                        'title': this.producto.title,
+                        'price': this.producto.price,
+                        'available_quantity': this.producto.available_quantity,
+                        'condition': this.producto.condition,
+                        'pictures': this.images,
+                        'category_id': this.producto.category_id,
                     },
                     dataType: "json",
                     success: function(response) {
@@ -217,18 +241,18 @@
                     type: "post",
                     url: "<?= base_url('dashboard/productos/update'); ?>",
                     data: {
-                        'id': producto.producto.id,
-                        'title': producto.producto.title,
-                        'price': producto.producto.price,
-                        'producto_id': producto.producto.producto_id,
-                        'status': producto.producto.status,
-                        // 'start_time': producto.producto.start_time,
-                        'stop_time': producto.producto.stop_time,
-                        'condition': producto.producto.condition,
-                        // 'pictures': producto.producto.pictures,
-                        // 'thumbnail': producto.producto.thumbnail,
-                        // 'city': producto.producto.city,
-                        // 'marca': producto.producto.marca,
+                        'id': this.producto.id,
+                        'title': this.producto.title,
+                        'price': this.producto.price,
+                        'producto_id': this.producto.producto_id,
+                        'status': this.producto.status,
+                        // 'start_time': this.producto.start_time,
+                        'stop_time': this.producto.stop_time,
+                        'condition': this.producto.condition,
+                        // 'pictures': this.producto.pictures,
+                        // 'thumbnail': this.producto.thumbnail,
+                        // 'city': this.producto.city,
+                        // 'marca': this.producto.marca,
                     },
                     dataType: "json",
                     success: function(response) {
@@ -251,58 +275,27 @@
                 });
             },
             img() {
-                this.images.push('source', this.add_image);
+                this.images.push({'source': this.add_image});
                 this.add_image = '';     
             },
-            Categorias(id){
-                this.setCategorias = []                
+            Categorias(id, index){
+                // console.log(index)
+                this.categorias.splice(index+1, this.categorias.length)
+                this.atributos = []
+                this.producto.category_id = id;
+                console.log(this.producto.category_id)
                 $.ajax({
                     type: "post",
                     url: "<?= base_url('paises/categorias')?>",
-                    data: id,
+                    data: {'id': id},
                     dataType: "json",
                     success: function (response) {
-                        producto.categorias.push(response.categorias)
-                        console.log(response.categorias)
-                    }
-                });
-            },
-            // subCategorias(id){
-            //     this.chilCategorias = []
-            //     $.ajax({
-            //         type: "post",
-            //         url: "<?php echo base_url('paises/detalle');?>",
-            //         data: {'id': id},
-            //         dataType: "JSON",
-            //         success: function (response) {
-            //             console.log(response.detalle)
-            //             producto.setCategorias = response.detalle.children_categories
-            //         }
-            //     });
-            // },
-            // chilSubCategorias(id){
-            //     this.atributos = []
-            //     console.log(id)
-            //     $.ajax({
-            //         type: "post",
-            //         url: "<?php echo base_url('paises/detalle');?>",
-            //         data: {'id': id},
-            //         dataType: "JSON",
-            //         success: function (response) {
-            //             console.log(response.detalle)
-            //             producto.chilCategorias = response.detalle.children_categories
-            //         }
-            //     });
-            // },
-            attrCategorias(id){
-                
-                $.ajax({
-                    type: "get",
-                    url: "<?= base_url('paises/atributos');?>"+"/"+id,
-                    dataType: "JSON",
-                    success: function (response) {
-                        console.log(response.atributos)
-                        producto.atributos = response.atributos
+                        console.log(response)                        
+                        if (response.groups) {
+                            producto_vue.atributos = response
+                        }else{
+                            producto_vue.categorias.push(response)
+                        }
                     }
                 });
             },
@@ -318,6 +311,7 @@
                 }
             },
             validated_campos(valiadate_campos){
+                // return true
                 for (var i = 0; i < valiadate_campos.length; i++) {
                     if (valiadate_campos[i]  == 'catalog_required' || valiadate_campos[i]  == 'required') {
                         return true

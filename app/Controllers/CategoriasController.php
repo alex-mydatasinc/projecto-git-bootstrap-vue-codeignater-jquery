@@ -21,26 +21,27 @@ class CategoriasController extends BaseController
             'Content-Type' => 'application/json',
         ];
     }
-    public function index()
-    {
-        //
-    }
     public function get_categorias(){
+        
         if ($this->request->getPost('id') == 'MCO') {
             $data['categorias'] = json_decode($this->client->get( 'sites/'.$this->request->getPost('id').'/categories', ['haeders' => $this->haeders])->getBody());
+            return $this->response->setJSON($data['categorias']);
         }else{
+            // print_r($this->request->getPost('id'));
             $data['categorias'] = json_decode($this->client->get( 'categories/'.$this->request->getPost('id'), ['haeders' => $this->haeders])->getBody());
+            if ($data['categorias']->children_categories) {
+                return $this->response->setJSON($data['categorias']->children_categories);
+            }else {
+                $data['atributos'] = json_decode($this->client->get( 'categories/'.$this->request->getPost('id').'/technical_specs/input', ['haeders' => $this->haeders])->getBody());
+                return $this->response->setJSON($data['atributos']);
+            }
+            
         }
-        return $this->response->setJSON($data);
+        
     }
     // public function get_detalle()
     // {
     //     $data['detalle'] = json_decode($this->client->get( 'categories/'.$this->request->getPost('id'), ['haeders' => $this->haeders])->getBody());
-    //     return $this->response->setJSON($data);
-    // }
-    // public function get_atributos($id= null)
-    // {
-    //     $data['atributos'] = json_decode($this->client->get( 'categories/'.$id.'/technical_specs/input', ['haeders' => $this->haeders])->getBody());
     //     return $this->response->setJSON($data);
     // }
 }
