@@ -119,6 +119,7 @@ class ProductoController extends BaseController
         ];
         // return $this->response->setJSON($data_request);
         $resuls_producto = json_decode($this->client->post('items', ['json' => $data_request, 'headers' => $this->haeders, 'http_errors' => false])->getBody());
+        print_r($resuls_producto);
         $data = [
             'producto_id' => $resuls_producto->id,
             'title' => $resuls_producto->title,
