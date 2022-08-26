@@ -27,6 +27,14 @@ class ProductosMigration extends Migration
                 'type' => 'INT',
                 'constraint'     => 5,
             ],
+            'category_id' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '100',
+            ],
+            'available_quantity' => [
+                'type' => 'INT',
+                'constraint'     => 5,
+            ],
             'status' => [
                 'type'       => 'VARCHAR',
                 'constraint' => '100',
@@ -48,6 +56,9 @@ class ProductosMigration extends Migration
                 'null' => true,
             ],
             'pictures' => [
+                'type' => 'JSON'
+            ],
+            'attributes' => [
                 'type' => 'JSON'
             ],
             // 'descriptions' => [

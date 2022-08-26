@@ -28,7 +28,7 @@ class ProductoController extends BaseController
         // $this->token = '';
         $this->haeders = [
             'Accept'        => 'application/json',
-            'Authorization' => 'Bearer APP_USR-4332857485021545-082510-db84053bf7e22ee55f8771f1e7601b59-833930674',
+            'Authorization' => 'Bearer APP_USR-4332857485021545-082614-0a6013052ed8f7f19e6c62ee55778896-833930674',
             'Content-Type' => 'application/json',
         ];
     }
@@ -50,7 +50,7 @@ class ProductoController extends BaseController
             'secret' => 'BXQbMgaylwbml72KGRrBtkdQCsATIkAm',
             'user_id' => '833930674'
         ];
-        $token = 'Bearer APP_USR-4332857485021545-082510-db84053bf7e22ee55f8771f1e7601b59-833930674';
+        $token = 'Bearer APP_USR-4332857485021545-082614-0a6013052ed8f7f19e6c62ee55778896-833930674';
         $haeders = [
             'headers' => [
                 'Accept'        => 'application/json',
@@ -65,6 +65,7 @@ class ProductoController extends BaseController
             foreach ($results_user->results as $producto) {
                 $resuls_producto = json_decode($client->get('items/' . $producto, $haeders)->getBody());
                 $data = [
+                    'category_id' => $resuls_producto->category_id,
                     'producto_id' => $resuls_producto->id,
                     'title' => $resuls_producto->title,
                     'price' => $resuls_producto->price,
@@ -73,15 +74,22 @@ class ProductoController extends BaseController
                     'stop_time' => $resuls_producto->stop_time,
                     'condition' => $resuls_producto->condition,
                     'permalink' => $resuls_producto->permalink,
+                    'available_quantity' => $resuls_producto->available_quantity,
+                    'attributes' => json_encode($resuls_producto->attributes),
+                    'pictures' => json_encode($resuls_producto->pictures),
                     'thumbnail' => $resuls_producto->thumbnail,
                     'city' => $resuls_producto->seller_address->city->name . ', ' . $resuls_producto->seller_address->state->name,
                     'marca' => $resuls_producto->attributes[0]->value_name,
                 ];
-                $pictures = [];
-                foreach ($resuls_producto->pictures as $img) {
-                    $pictures[] = $img->url;
-                }
-                $data['pictures'] = json_encode($pictures);
+                // $pictures = [];
+                // foreach ($resuls_producto->pictures as $img) {
+                //     $pictures[] = $img->url;
+                // }
+                // $attributes = [];
+                // foreach ($resuls_producto->attributes as $attr) {
+                //     // $attributes[] = $attr->url;
+                // }
+                // $data['pictures'] = json_encode($pictures);
                 $productos[] = $data;
                 if ($data) {
                     $model->insert($data);
@@ -93,7 +101,7 @@ class ProductoController extends BaseController
 
     public function get_productos()
     {
-        $productos = $this->model->findAll();
+        $productos = $this->model->where('status', 'active')->findAll();
         return $this->response->setJSON($productos);
     }
     public function store_producto()
@@ -106,7 +114,8 @@ class ProductoController extends BaseController
             "available_quantity" => $this->request->getPost('available_quantity'),
             "condition" => $this->request->getPost('condition'),
             "listing_type_id" => "gold_special",
-            "pictures" => $this->request->getPost('pictures')
+            "pictures" => $this->request->getPost('pictures'),
+            "attributes" => $this->request->getPost('attributes')
         ];
         // return $this->response->setJSON($data_request);
         $resuls_producto = json_decode($this->client->post('items', ['json' => $data_request, 'headers' => $this->haeders, 'http_errors' => false])->getBody());
@@ -119,7 +128,10 @@ class ProductoController extends BaseController
             'stop_time' => $resuls_producto->stop_time,
             'condition' => $resuls_producto->condition,
             'permalink' => $resuls_producto->permalink,
-            'thumbnail' => $resuls_producto->thumbnail
+            'thumbnail' => $resuls_producto->thumbnail,
+            'category_id' => $resuls_producto->category_id,
+            'available_quantity' => $resuls_producto->available_quantity,
+            'attributes' => json_encode($resuls_producto->attributes),
         ];
         $pictures = [];
         foreach ($resuls_producto->pictures as $img) {
@@ -132,26 +144,34 @@ class ProductoController extends BaseController
         }
         return $this->response->setJSON($resuls_producto);
     }
+
     public function update_productos()
     {
         $data = [
-            'title' => $this->request->getPost('title'),
-            'price' => $this->request->getPost('price'),
-            'status' => $this->request->getPost('status'),
-            // 'start_time' => $this->request->getPost('start_time'),            
-            // 'stop_time' => $this->request->getPost('stop_time'),            
-            'condition' => $this->request->getPost('condition'),
-            // 'permalink' => $this->request->getPost('permalink'),            
-            // 'pictures' => json_decode($this->request->getPost('pictures')),
-            // 'thumbnail' => $this->request->getPost('thumbnail'),
-            // 'city' => $this->request->getPost('city'),            
-            // 'marca' => $this->request->getPost('marca'),         
+            "title" => $this->request->getPost('title'),
+            "category_id" => $this->request->getPost('category_id'),
+            "price" => $this->request->getPost('price'),
+            "available_quantity" => $this->request->getPost('available_quantity'),
+            "condition" => $this->request->getPost('condition'),
+            "pictures" => $this->request->getPost('pictures'),
+            "attributes" => $this->request->getPost('attributes'),
+            // 'producto_id' => $this->request->getPost('producto_id'),
+            // 'id' => $this->request->getPost('id'),
         ];
         // return $this->response->setJSON($data);
         $producto = $this->client->put('items/' . $this->request->getPost('producto_id'), ['json' => $data, 'headers' => $this->haeders])->getBody();
+        // return $this->response->setJSON(json_decode($producto)->pictures);
+        // $pictures = [];
+        // foreach ($producto->pictures as $img) {
+        //     $pictures[] = $img->url;
+        // }
+        // $data['pictures'] = json_encode($pictures);
+        $data['pictures'] = json_encode(json_decode($producto)->pictures);
+        $data['attributes'] = json_encode($this->request->getPost('attributes'));
         $id = $this->request->getPost('id');
         if ($this->model->find($id)) {
             if ($this->model->update($id, $data)) {
+                return $this->response->setJSON($this->model->find($id));
                 $state = 200;
             } else {
                 $state = 400;
