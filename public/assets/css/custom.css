@@ -11,3 +11,9 @@
 .h-5{
     width: 5rem; /* 80px */
 }
+.flex-none{
+    flex: none;
+}
+.flex-auto{
+    flex: 1 1 auto;
+}

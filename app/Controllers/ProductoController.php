@@ -28,7 +28,7 @@ class ProductoController extends BaseController
         // $this->token = '';
         $this->haeders = [
             'Accept'        => 'application/json',
-            'Authorization' => 'Bearer APP_USR-4332857485021545-082614-0a6013052ed8f7f19e6c62ee55778896-833930674',
+            'Authorization' => 'Bearer APP_USR-4332857485021545-082914-8bbfd91adde80c5484e52e3bc4b85dd0-833930674',
             'Content-Type' => 'application/json',
         ];
     }
@@ -50,7 +50,7 @@ class ProductoController extends BaseController
             'secret' => 'BXQbMgaylwbml72KGRrBtkdQCsATIkAm',
             'user_id' => '833930674'
         ];
-        $token = 'Bearer APP_USR-4332857485021545-082614-0a6013052ed8f7f19e6c62ee55778896-833930674';
+        $token = 'Bearer APP_USR-4332857485021545-082914-8bbfd91adde80c5484e52e3bc4b85dd0-833930674';
         $haeders = [
             'headers' => [
                 'Accept'        => 'application/json',
@@ -59,7 +59,7 @@ class ProductoController extends BaseController
             ],
         ];
         $model->emptyTable('productos');
-        $results_user = json_decode($client->get('users/' . $user['user_id'] . '/items/search?limit=1000', $haeders)->getBody());
+        $results_user = json_decode($client->get('users/' . $user['user_id'] . '/items/search?limit=200&offset=100', $haeders)->getBody());
         $productos = [];
         if ($results_user->results) {
             foreach ($results_user->results as $producto) {
@@ -101,7 +101,7 @@ class ProductoController extends BaseController
 
     public function get_productos()
     {
-        $productos = $this->model->where('status', 'active')->findAll();
+        $productos = $this->model->where('status', 'active')->orWhere('status', 'paused')->findAll();
         return $this->response->setJSON($productos);
     }
     public function store_producto()
@@ -141,7 +141,7 @@ class ProductoController extends BaseController
         $data['pictures'] = json_encode($pictures);
         $productos[] = $data;
         if ($data) {
-            $this->model->insert($data);
+            return $this->model->insert($data);
         }
         return $this->response->setJSON($resuls_producto);
     }
@@ -172,7 +172,7 @@ class ProductoController extends BaseController
         $id = $this->request->getPost('id');
         if ($this->model->find($id)) {
             if ($this->model->update($id, $data)) {
-                return $this->response->setJSON($this->model->find($id));
+                // return $this->response->setJSON($this->model->find($id));
                 $state = 200;
             } else {
                 $state = 400;
@@ -180,13 +180,14 @@ class ProductoController extends BaseController
         } else {
             $state = 400;
         }
-        return $this->response->setJSON($producto);
+        return $this->response->setJSON(json_decode($producto));
     }
     public function delete_producto()
     {
         $this->client->put('items/'.$this->request->getPost('producto_id'), ['json' => ['status'=>'paused'], 'headers' => $this->haeders, 'http_errors' => false])->getBody();
         $producto = json_decode($this->client->put('items/'.$this->request->getPost('producto_id'), ['json' => ['status'=>'closed'], 'headers' => $this->haeders, 'http_errors' => false])->getBody());
-        return $this->response->setJSON($producto);
+        $this->model->delete($this->request->getPost('producto_id'));
+        return $this->response->setJSON([$producto, 'status'=> 'eliminado']);
         
     }
 }

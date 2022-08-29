@@ -36,7 +36,7 @@
                     <div class="d-flex justify-content-around h-100 d-flex align-items-end">
                         <div class="row text-primary">
                             <a class="fa-solid fa-pen-to-square text-sz mx-3 btn btn-primary" href="#" role="button" @click="showModal(producto)"></a>
-                            <a class="fa-solid fa-trash-can text-sz btn btn btn-danger" href="#" role="button" @click="delete_producto(producto.producto_id)"></a>
+                            <a class="fa-solid fa-trash-can text-sz btn btn btn-danger" href="#" role="button" @click="delete_producto(producto.producto_id, producto.id)"></a>
                         </div>
 
                     </div>
@@ -108,21 +108,28 @@
                                 <div class="form-group col-4" v-for="(caracteristicas, index) in atributos.components">
                                 <!-- <div class="form-group col-4" v-for="(caracteristicas, index) in atributos.components" v-if="validated_campos(caracteristicas.attributes[0].tags)"> -->
                                     <!-- {{caracteristicas.attributes[0].value_type}} -->
-                                    <label for="">{{caracteristicas.attributes[0]['name']}}</label>
+                                    <label for="">{{caracteristicas.attributes[0]['name'] }}<span class="text-danger">{{validated_campos(caracteristicas.attributes[0]['tags']) ? '*' : ''}}</span></label>
                                     <select class="form-control" v-if="type_input(caracteristicas.attributes[0]['value_type']) == 'select'" :id="caracteristicas.attributes[0]['id']" :name="caracteristicas.attributes[0]['id']" :id="'atributo'+index">
                                         <option disabled selected value="">Ingrese {{caracteristicas.attributes[0]['name']}}</option>
                                         <option v-for="value in caracteristicas.attributes[0]['values']" :value="value.name">{{value.name}}</option>
                                         {{caracteristicas.attributes[0].units}}
                                     </select>
-                                    <input :type="type_input(caracteristicas.attributes[0]['value_type'])" v-else 
-                                        class="form-control" 
-                                        :placeholder="'ingrese '+caracteristicas.attributes[0]['name']" 
-                                        :list="'list-value'+index"
-                                        :name="caracteristicas.attributes[0]['id']"
-                                        :id="caracteristicas.attributes[0]['id']">
-                                    <datalist :id="'list-value'+index" v-if="caracteristicas.attributes[0]['values']">
-                                        <option v-for="value in caracteristicas.attributes[0]['values']" >{{value.name}}</option>
-                                    </datalist>
+                                    <div class="input-group mb-3"  v-else>
+                                        <input :type="type_input(caracteristicas.attributes[0]['value_type'])"
+                                            class="form-control" 
+                                            :placeholder="'ingrese '+caracteristicas.attributes[0]['name']" 
+                                            :list="'list-value'+index"
+                                            :name="caracteristicas.attributes[0]['id']"
+                                            :id="caracteristicas.attributes[0]['id']">
+                                        <select class="input-group-prepend input-group-text" v-if="caracteristicas.attributes[0]['units']" :id="caracteristicas.attributes[0]['id']+'-unit'">
+                                            <option value="" v-for="unit in caracteristicas.attributes[0]['units']" :value="unit.id">{{unit.name}}</option>
+                                        </select>
+                                        <datalist :id="'list-value'+index" v-if="caracteristicas.attributes[0]['values']">
+                                            <option v-for="value in caracteristicas.attributes[0]['values']" >{{value.name}}</option>
+                                        </datalist>
+                                    </div>
+                                    
+                                    
                                 </div>           
                         </div>
                         </div>
@@ -193,28 +200,31 @@
                     }
                 });
             },
-            showModal(producto) {
+            async showModal(producto) {
                 this.categorias = []
                 this.categorias.splice(0, this.categorias.length)
                 this.Categorias("MCO", 0);
                 $('#d_producto').modal('show')
                 if (producto) {
-                    this.producto = producto;
-                    let attributes = JSON.parse(this.producto.attributes);                    
+                    this.producto = producto;                    
+                    let attributes =  await JSON.parse(this.producto.attributes);
+                    console.log(this.attributes)                
                     this.images = []
+                    await this.Categorias(this.producto.category_id, 1);
                     this.producto.category_id = this.producto.category_id;
-                    JSON.parse(this.producto.pictures).forEach(img => {
+                    await JSON.parse(this.producto.pictures).forEach(img => {
                         this.images.push({'source': img.url});
-                    });
-                    this.Categorias(this.producto.category_id, 1);
+                    });                    
                     this.btn = 0;
-                    setTimeout(function(){
-                        console.log("Hola Mundo");
+                    await setTimeout(function(){
                         attributes.forEach(attr => {
-                            $(`#${attr.id}`).val(attr.value_name);
-                            console.log(`id${attr.id}  value_name` +attr.value_name)
+                            var porciones = attr.value_name.split(' ');
+                            $(`#${attr.id}`).val(porciones[0]);
+                            $('#'+attr.id+'-unit').val(porciones[1] ?? null);
+                            
+                            // console.log(`id${attr.id}  value_name` +attr.value_name)
                         });
-                    }, 2000);
+                    }, 3000);
                     
                 } else {
                     this.btn = 1;
@@ -229,8 +239,17 @@
                 // console.log(formData.get("atributo1"));
                 this.get_atributos = [];
                 for(let [name, value] of formData) {
+                    
                     // console.log(formData.get(`${name}`));
-                    this.get_atributos.push({'id':name, 'value_name': value})
+                    let unit = $('#'+name+'-unit').val()
+                    console.log(unit)
+                    if (unit && value) {
+                        this.get_atributos.push({'id':name, 'value_name': value+' '+unit}) 
+                    }else{
+                        if(value){
+                            this.get_atributos.push({'id':name, 'value_name': value})
+                        }   
+                    }
                 }
             
                 console.log(this.get_atributos)
@@ -258,7 +277,17 @@
                 var formData = new FormData($("#form_producto")[0]);
                 this.get_atributos = [];
                 for(let [name, value] of formData) {
-                    this.get_atributos.push({'id':name, 'value_name': value})
+                    
+                    // console.log(formData.get(`${name}`));
+                    let unit = $('#'+name+'-unit').val()
+                    console.log(unit)
+                    if (unit && value) {
+                        this.get_atributos.push({'id':name, 'value_name': value+' '+unit})
+                    }else{
+                        if(value){
+                            this.get_atributos.push({'id':name, 'value_name': value})
+                        }   
+                    }
                 }
                 $.ajax({
                     type: "post",
@@ -281,12 +310,13 @@
                     }
                 });
             },
-            delete_producto(producto_id) {
+            delete_producto(producto_id, id) {
                 $.ajax({
                     type: "post",
                     url: "<?= base_url('dashboard/productos/delete'); ?>",
                     data: {
                         'producto_id': producto_id,
+                        'id': id,
                     },
                     dataType: "json",
                     success: function(response) {
@@ -313,7 +343,7 @@
                     data: {'id': id},
                     dataType: "json",
                     success: function (response) {
-                        
+                        console.log(response)
                         if (response.groups) {
                             console.log(JSON.stringify(response.groups[0].label))
                             producto_vue.atributos = response.groups[0]
@@ -337,7 +367,7 @@
             validated_campos(valiadate_campos){
                 // return true
                 for (var i = 0; i < valiadate_campos.length; i++) {
-                    if (valiadate_campos[i]  == 'catalog_required' || valiadate_campos[i]  == 'required' || valiadate_campos[i]  == 'multivalued'|| valiadate_campos[i]  == 'inferred') {
+                    if (valiadate_campos[i]  == 'catalog_required' || valiadate_campos[i]  == 'required') {
                         return true
                     }else{
                         return false
