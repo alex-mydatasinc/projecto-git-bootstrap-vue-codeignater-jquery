@@ -36,6 +36,7 @@
                                     </td>
                                     <td>
                                         {{producto.price}}
+                                        {{producto.price}}
                                     </td>
                                     <td>
                                         {{producto.available_quantity}}
