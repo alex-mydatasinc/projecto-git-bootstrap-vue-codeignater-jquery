@@ -22,7 +22,7 @@
                         <a href="<?= base_url('dashboard/productos') ?>"><i class="fa fa-th-large"></i> <span class="nav-label">Productos</span></a>
                     </li>
                     <li class="active">
-                        <a href="<?= base_url('dashboard/productos/list') ?>"><i class="fa fa-th-large"></i> <span class="nav-label">lista</span></a>
+                        <a href="<?= base_url('dashboard/productos/list') ?>"><i class="fa fa-th-large"></i> <span class="nav-label">lista productos</span></a>
                     </li>
                     <!-- <li><a href="ecommerce_product_list.html">Products list</a></li>
                     <li><a href="ecommerce_product.html">Product edit</a></li>
