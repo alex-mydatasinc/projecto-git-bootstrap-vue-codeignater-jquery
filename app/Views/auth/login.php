@@ -1,21 +1,86 @@
-<div class="container" id="login_vue">
-    <div class="w-75 h-100 p-3 mx-auto align-middle rounded shadow-md bg-primary" style="height: 100%; background-color: rgba(255,0,0,0.1);">        
-        <form @submit.prevent="submit_login()" class="align-middle">
-            <div class="form-group">
-              <label for="">Email</label>
-              <input type="email" class="form-control"placeholder="Ingrese Email valido" v-model="user.email">
-              <small id="emailHelpId" class="form-text text-muted">Help text</small>
-            </div>
-            <div class="form-group">
-              <label for="">Password</label>
-              <input type="password" class="form-control" placeholder="Ingrese su contraseña" v-model="user.password">
-            </div>
-            <button type="submit" class="btn btn-primary">Entrar</button>
-        </form>
-    </div>
-</div>
+<!DOCTYPE html>
+<html>
 
-<script>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INSPINIA | Login 2</title>
+
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/assets/css/animate.css" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+
+    <div class="loginColumns animated fadeInDown" id="login_vue">
+        <div class="row">
+
+            <div class="col-md-6">
+                <h2 class="font-bold">Welcome to IN+</h2>
+
+                <p>
+                    Perfectly designed and precisely prepared admin theme with over 50 pages with extra new web app views.
+                </p>
+
+                <p>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                </p>
+
+                <p>
+                    When an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                </p>
+
+                <p>
+                    <small>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</small>
+                </p>
+
+            </div>
+            <div class="col-md-6">
+                <div class="ibox-content">
+                    <form class="m-t" role="form" @submit.prevent="submit_login()">
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Username" required="" v-model="user.email">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Password" required="" v-model="user.password">
+                        </div>
+                        <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+
+                        <a href="#">
+                            <small>Forgot password?</small>
+                        </a>
+
+                        <p class="text-muted text-center">
+                            <small>Do not have an account?</small>
+                        </p>
+                        <a class="btn btn-sm btn-white btn-block" href="register.html">Create an account</a>
+                    </form>
+                    <p class="m-t">
+                        <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-6">
+                Copyright Example Company
+            </div>
+            <div class="col-md-6 text-right">
+               <small>© 2014-2015</small>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/assets/js/jquery-3.6.0.min.js"></script>
+    <script src="/assets/js/vue.js"></script>
+    <script>
     let login = new Vue({
         el: '#login_vue',
         data() {
@@ -36,7 +101,7 @@
                     success: function (response) {
                         console.log(response)
                         if (response.state == 200) {
-                            window.location.href = "<?= base_url('dashboard') ?>"
+                            window.location.href = "<?= base_url('dashboard/productos') ?>"
                         }
                     }
                 });
@@ -44,3 +109,6 @@
         },
     })
 </script>
+</body>
+
+</html>

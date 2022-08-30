@@ -34,6 +34,7 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 $routes->post('login', 'AuthController::auth_login');
+$routes->get('logout', 'AuthController::logout');
 $routes->get('login_in', 'AuthController::index');
 $routes->get('/pais', 'Paises::index', ['filter' => 'auth']);
 $routes->get('paises', 'Paises::list', ['filter' => 'auth']);
@@ -42,6 +43,7 @@ $routes->post('paises/detalle', 'CategoriasController::get_detalle', ['filter' =
 $routes->get('paises/atributos/(:alphanum)', 'CategoriasController::get_atributos/$1', ['filter' => 'auth']);
 $routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
 $routes->get('dashboard/productos', 'ProductoController::index', ['filter' => 'auth']);
+$routes->get('dashboard/productos/list', 'ProductoController::list', ['filter' => 'auth']);
 $routes->get('dashboard/get_productos', 'ProductoController::get_productos', ['filter' => 'auth']);
 $routes->get('dashboard/productos/Generar', 'ProductoController::productos_user');
 $routes->post('dashboard/productos/update', 'ProductoController::update_productos', ['filter' => 'auth']);

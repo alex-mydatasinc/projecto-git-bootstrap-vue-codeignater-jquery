@@ -39,4 +39,11 @@ class AuthController extends BaseController
             
         }
     }
+    public function logout()
+    {
+        $session = session();
+        $session->destroy();
+        // return $session->setFlashdata(['msg' => 'cession cerrada', 'status' => 200]);
+        return redirect()->to('login_in');
+    }
 }
