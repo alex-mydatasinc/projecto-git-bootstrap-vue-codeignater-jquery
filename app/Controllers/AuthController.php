@@ -8,9 +8,7 @@ class AuthController extends BaseController
 {
     public function index()
     {
-        return view('templates/header')
-                .view('auth/login')
-                .view('templates/footer');
+        return view('auth/login');
     }
     public function auth_login()
     {
