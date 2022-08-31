@@ -91,6 +91,12 @@
                 }
             }
         },
+        mounted() {
+            let session = "<?= session()->get('login_in');?>"
+            if (session) {
+                window.location.href = "<?= base_url('dashboard/productos') ?>"
+            }
+        },
         methods: {
             submit_login(){
                 $.ajax({
