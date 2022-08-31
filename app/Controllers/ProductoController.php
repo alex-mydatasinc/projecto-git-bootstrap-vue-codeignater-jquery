@@ -28,7 +28,7 @@ class ProductoController extends BaseController
         // $this->token = '';
         $this->haeders = [
             'Accept'        => 'application/json',
-            'Authorization' => 'Bearer APP_USR-4332857485021545-083108-111092eace74b5e0970580cc4c104058-833930674',
+            'Authorization' => 'Bearer APP_USR-4332857485021545-083116-aa37a118db008a55dc224415b00d31d0-833930674',
             'Content-Type' => 'application/json',
         ];
     }
@@ -36,9 +36,29 @@ class ProductoController extends BaseController
     {
         return view('productos/index');
     }
-    public function list(){
+    public function list()
+    {
         return view('productos/list');
     }
+
+    public function paginar($ini, $fin)
+    {
+        $url = 'https://api.mercadolibre.com/users/833930674/items/search?limit=' . $ini . '&offset=' . $fin;
+        /* Init cURL resource */
+        $ch = curl_init($url);
+        $headers = array(
+            "Accept: application/json",
+            "Authorization: Bearer APP_USR-4332857485021545-083116-aa37a118db008a55dc224415b00d31d0-833930674",
+        );
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        /* execute request */
+        $result = (curl_exec($ch));
+        curl_close($ch);
+        return json_decode($result);
+    }
+
     public function productos_user()
     {
         $model = new Producto();
@@ -51,7 +71,7 @@ class ProductoController extends BaseController
             'secret' => 'BXQbMgaylwbml72KGRrBtkdQCsATIkAm',
             'user_id' => '833930674'
         ];
-        $token = 'Bearer APP_USR-4332857485021545-083108-111092eace74b5e0970580cc4c104058-833930674';
+        $token = 'Bearer APP_USR-4332857485021545-083116-aa37a118db008a55dc224415b00d31d0-833930674';
         $haeders = [
             'headers' => [
                 'Accept'        => 'application/json',
@@ -60,9 +80,15 @@ class ProductoController extends BaseController
             ],
         ];
         $model->emptyTable('productos');
-        $results_user = json_decode($client->get('users/' . $user['user_id'] . '/items/search?limit=200&offset=100', $haeders)->getBody());
-        $productos = [];
-        if ($results_user->results) {
+
+        $ini = 0;
+        $fin = 100;
+        $totalpaging = ceil((($this->paginar($ini, $fin)->paging->total) / 100));
+
+        for ($i = 0; $i < $totalpaging; $i++) {
+
+            $results_user = $this->paginar($ini, $fin);
+
             foreach ($results_user->results as $producto) {
                 $resuls_producto = json_decode($client->get('items/' . $producto, $haeders)->getBody());
                 $data = [
@@ -96,9 +122,15 @@ class ProductoController extends BaseController
                     $model->insert($data);
                 }
             }
-            return $this->response->setJSON($productos);
+
+            $ini = $fin;
+            $fin = $fin + 100;
         }
+
+
+        return $this->response->setJSON($productos);
     }
+
 
     public function get_productos()
     {
@@ -185,10 +217,9 @@ class ProductoController extends BaseController
     }
     public function delete_producto()
     {
-        $this->client->put('items/'.$this->request->getPost('producto_id'), ['json' => ['status'=>'paused'], 'headers' => $this->haeders, 'http_errors' => false])->getBody();
-        $producto = json_decode($this->client->put('items/'.$this->request->getPost('producto_id'), ['json' => ['status'=>'closed'], 'headers' => $this->haeders, 'http_errors' => false])->getBody());
+        $this->client->put('items/' . $this->request->getPost('producto_id'), ['json' => ['status' => 'paused'], 'headers' => $this->haeders, 'http_errors' => false])->getBody();
+        $producto = json_decode($this->client->put('items/' . $this->request->getPost('producto_id'), ['json' => ['status' => 'closed'], 'headers' => $this->haeders, 'http_errors' => false])->getBody());
         $this->model->delete($this->request->getPost('producto_id'));
-        return $this->response->setJSON([$producto, 'status'=> 'eliminado']);
-        
+        return $this->response->setJSON([$producto, 'status' => 'eliminado']);
     }
 }

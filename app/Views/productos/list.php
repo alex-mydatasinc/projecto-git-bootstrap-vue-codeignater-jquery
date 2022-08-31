@@ -6,6 +6,8 @@
     <div class="col-lg-12">
         <div class="mb-3">
             <button type="button" class="btn btn-primary" @click="showModal()"><i class="fa-duotone fa-plus"></i></button> CREAR PRODUCTO
+            <button  @click="btn_sincrozar()" class="btn btn-success btn-circle btn-lg mr-1 float-right d-flex align-items-center mb-2" type="button"><i class="fa fa-link"></i>
+            </button>
         </div>
         <div class="ibox">
             <div class="ibox-content">
@@ -150,6 +152,17 @@
                     this.producto = [];
                     this.images = []
                 }
+            },
+            btn_sincrozar: function() {
+                $.ajax({
+                    type: "GET",
+                    url: "<?= base_url('dashboard/productos/Generar'); ?>",
+                    dataType: "json",
+                    success: function(response) {
+                       // this.get_productos();
+                       console.log(response);
+                    }
+                });
             },
             store_producto() {
                 var formData = new FormData($("#form_producto")[0]);
