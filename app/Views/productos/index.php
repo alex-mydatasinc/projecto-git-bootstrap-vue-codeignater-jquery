@@ -54,6 +54,58 @@
         </div>
     </div>
 
-    <?= $this->include('productos/partials/modal') ?>
+    
 </div>
+<script>
+        $(document).ready(function() {
+            $('.carousel').carousel();
+            $('#form_producto').submit(function(e) {
+                e.preventDefault();
+                alert('entro')
+            });
+        });
+        let producto_vue = new Vue({
+            el: '#producto_vue',
+            data() {
+                return {
+                    productos: [],
+                    add_image: '',
+                    images: [],
+                }
+            },
+            mounted() {
+                this.get_productos()
+            },
+            methods: {
+                get_productos_api() {
+                    $.ajax({
+                        type: "get",
+                        url: "<?= base_url('dashboard/productos/Generar'); ?>",
+                        dataType: "json",
+                        success: function(response) {
+                            console.log(response);
+                        }
+                    });
+                },
+                get_productos() {
+                    $.ajax({
+                        type: "get",
+                        url: "<?= base_url('dashboard/get_productos'); ?>",
+                        dataType: "json",
+                        success: function(response) {
+                            producto_vue.productos = response;
+                            console.log(response);
+                        }
+                    });
+                },
+                img() {
+                    this.images.push({
+                        'source': this.add_image
+                    });
+                    console.log(this.images);
+                    this.add_image = '';
+                }
+            },
+        })
+    </script>
 <?= $this->endSection() ?>

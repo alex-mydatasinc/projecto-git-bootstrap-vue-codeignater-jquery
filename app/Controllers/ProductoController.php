@@ -28,7 +28,7 @@ class ProductoController extends BaseController
         // $this->token = '';
         $this->haeders = [
             'Accept'        => 'application/json',
-            'Authorization' => 'Bearer APP_USR-4332857485021545-083008-bd43d5031b5e9cb12f70a4b21f7dfc83-833930674',
+            'Authorization' => 'Bearer APP_USR-4332857485021545-083108-111092eace74b5e0970580cc4c104058-833930674',
             'Content-Type' => 'application/json',
         ];
     }
@@ -51,7 +51,7 @@ class ProductoController extends BaseController
             'secret' => 'BXQbMgaylwbml72KGRrBtkdQCsATIkAm',
             'user_id' => '833930674'
         ];
-        $token = 'Bearer APP_USR-4332857485021545-083008-bd43d5031b5e9cb12f70a4b21f7dfc83-833930674';
+        $token = 'Bearer APP_USR-4332857485021545-083108-111092eace74b5e0970580cc4c104058-833930674';
         $haeders = [
             'headers' => [
                 'Accept'        => 'application/json',
