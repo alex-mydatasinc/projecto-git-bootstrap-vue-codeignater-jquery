@@ -40,7 +40,10 @@ class ProductoController extends BaseController
     {
         return view('productos/list');
     }
-
+    public function create()
+    {
+        return view('productos/create');
+    }
     public function paginar($ini, $fin)
     {
         $url = 'https://api.mercadolibre.com/users/833930674/items/search?limit=' . $ini . '&offset=' . $fin;

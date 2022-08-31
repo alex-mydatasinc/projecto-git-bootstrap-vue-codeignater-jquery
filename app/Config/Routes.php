@@ -48,6 +48,7 @@ $routes->get('paises/atributos/(:alphanum)', 'CategoriasController::get_atributo
 $routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
 $routes->get('dashboard/productos', 'ProductoController::index', ['filter' => 'auth']);
 $routes->get('dashboard/productos/list', 'ProductoController::list', ['filter' => 'auth']);
+$routes->get('dashboard/productos/create', 'ProductoController::create', ['filter' => 'auth']);
 $routes->get('dashboard/get_productos', 'ProductoController::get_productos', ['filter' => 'auth']);
 $routes->get('dashboard/productos/Generar', 'ProductoController::productos_user');
 $routes->post('dashboard/productos/update', 'ProductoController::update_productos', ['filter' => 'auth']);
