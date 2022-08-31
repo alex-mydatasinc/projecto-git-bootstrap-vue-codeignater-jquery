@@ -38,7 +38,7 @@ $routes->get('logout', 'AuthController::logout');
 $routes->get('login_in', 'AuthController::index');
 
 $routes->get('/register','AuthController::indexregister');
-$routes->post('auth/register','AuthController::save');
+$routes->post('auth/register','AuthController::git');
 
 $routes->get('/pais', 'Paises::index', ['filter' => 'auth']);
 $routes->get('paises', 'Paises::list', ['filter' => 'auth']);

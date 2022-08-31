@@ -44,7 +44,7 @@ class AuthController extends BaseController
         }
     }
 
-    public function save()
+    public function register_save()
     {
         //include helper form
         // helper(['form']);
