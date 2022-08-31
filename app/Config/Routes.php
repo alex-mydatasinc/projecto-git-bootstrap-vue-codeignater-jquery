@@ -36,6 +36,10 @@ $routes->get('/', 'Home::index');
 $routes->post('login', 'AuthController::auth_login');
 $routes->get('logout', 'AuthController::logout');
 $routes->get('login_in', 'AuthController::index');
+
+$routes->get('/register','AuthController::indexregister');
+$routes->post('auth/register','AuthController::save');
+
 $routes->get('/pais', 'Paises::index', ['filter' => 'auth']);
 $routes->get('paises', 'Paises::list', ['filter' => 'auth']);
 $routes->post('paises/categorias', 'CategoriasController::get_categorias', ['filter' => 'auth']);
