@@ -36,6 +36,10 @@ $routes->get('/', 'Home::index');
 $routes->post('login', 'AuthController::auth_login');
 $routes->get('logout', 'AuthController::logout');
 $routes->get('login_in', 'AuthController::index');
+
+$routes->get('/register','AuthController::indexregister');
+$routes->post('auth/register','AuthController::git');
+
 $routes->get('/pais', 'Paises::index', ['filter' => 'auth']);
 $routes->get('paises', 'Paises::list', ['filter' => 'auth']);
 $routes->post('paises/categorias', 'CategoriasController::get_categorias', ['filter' => 'auth']);
@@ -44,6 +48,7 @@ $routes->get('paises/atributos/(:alphanum)', 'CategoriasController::get_atributo
 $routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
 $routes->get('dashboard/productos', 'ProductoController::index', ['filter' => 'auth']);
 $routes->get('dashboard/productos/list', 'ProductoController::list', ['filter' => 'auth']);
+$routes->get('dashboard/productos/create', 'ProductoController::create', ['filter' => 'auth']);
 $routes->get('dashboard/get_productos', 'ProductoController::get_productos', ['filter' => 'auth']);
 $routes->get('dashboard/productos/Generar', 'ProductoController::productos_user');
 $routes->post('dashboard/productos/update', 'ProductoController::update_productos', ['filter' => 'auth']);
