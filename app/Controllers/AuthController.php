@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\UserModel;
 use App\Controllers\BaseController;
 
@@ -10,6 +11,11 @@ class AuthController extends BaseController
     {
         return view('auth/login');
     }
+    public function indexregister()
+    {
+        return view('auth/register');
+    }
+
     public function auth_login()
     {
         $session = session();
@@ -30,13 +36,43 @@ class AuthController extends BaseController
             }
             return $session->setFlashdata('msg', 'contraseña no valida');
             // return $this->response->setJSON(['statepassword' => 404]);
-            
-        }else {
+
+        } else {
             return $session->setFlashdata('msg', 'No hay registros de este correo');
             // return $this->response->setJSON(['stateuser' => 404]);
-            
+
         }
     }
+
+    public function save()
+    {
+        //include helper form
+        // helper(['form']);
+        //set rules validation form
+        // return $this->response->setJSON(json_encode($this->request->getPost('username')));
+
+        $rules = [
+            'name'      => 'required',
+            'email'         => 'required',
+            'password'      => 'required'
+
+        ];
+
+        if ($this->validate($rules)) {
+            $model = new UserModel();
+            $data = [
+                'name'     => $this->request->getPost('name'),
+                'email'    => $this->request->getPost('email'),
+                'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT)
+            ];
+            $model->save($data);
+            return $this->response->setJSON(['state' => 200]);
+        } else {
+            $data['validation'] = $this->validator;
+            echo view('register', $data);
+        }
+    }
+    
     public function logout()
     {
         $session = session();

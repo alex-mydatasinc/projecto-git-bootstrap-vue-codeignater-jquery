@@ -2,7 +2,11 @@
 
 <?= $this->section('content') ?>
 <div class="row" id="producto_list_crud">
+
     <div class="col-lg-12">
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" @click="showModal()"><i class="fa-duotone fa-plus"></i></button> CREAR PRODUCTO
+        </div>
         <div class="ibox">
             <div class="ibox-content">
 
@@ -45,8 +49,9 @@
                             </td>
                             <td class="text-right">
                                 <div class="btn-group">
-                                    <button class="btn-white btn btn-xs">View</button>
-                                    <button class="btn-white btn btn-xs">Edit</button>
+                                    <!-- <button class="btn-white btn btn-xs" >View</button> -->
+                                    <button class="btn-white btn btn-xs" @click="showModal(producto)">Edit</button>
+                                    <button class="btn-danger btn btn-xs" @click="delete_producto(producto.producto_id, producto.id)">Eliminar</button>
                                 </div>
                             </td>
                         </tr>
@@ -272,9 +277,9 @@
                         console.log(response)
                         if (response.groups) {
                             console.log(JSON.stringify(response.groups[0].label))
-                            producto_vue.atributos = response.groups[0]
+                            producto_list.atributos = response.groups[0]
                         } else {
-                            producto_vue.categorias.push(response)
+                            producto_list.categorias.push(response)
                         }
                     }
                 });
