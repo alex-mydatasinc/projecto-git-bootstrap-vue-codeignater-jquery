@@ -24,7 +24,9 @@
                     <li class="active">
                         <a href="<?= base_url('dashboard/productos/list') ?>"><i class="fa fa-th-large"></i> <span class="nav-label">lista</span></a>
                     </li>
-               
+                    <li class="active">
+                        <a href="<?= base_url('dashboard/productos/create') ?>"><i class="fa fa-th-large"></i> <span class="nav-label">create</span></a>
+                    </li>
                     <!-- <li><a href="ecommerce_product_list.html">Products list</a></li>
                     <li><a href="ecommerce_product.html">Product edit</a></li>
                     <li><a href="ecommerce_product_detail.html">Product detail</a></li>
