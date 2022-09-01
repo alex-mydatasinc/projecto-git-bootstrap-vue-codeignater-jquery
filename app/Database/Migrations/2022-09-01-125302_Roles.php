@@ -18,6 +18,7 @@ class Roles extends Migration
             'name' => [
                 'type'       => 'ENUM',
                 'constraint' => ['ADMIN', 'USER', 'COLABORADOR'],
+                'unsigned'       => true,
                 'default'    => 'USER',
         
             ]
