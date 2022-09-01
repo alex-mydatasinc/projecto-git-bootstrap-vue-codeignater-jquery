@@ -16,8 +16,10 @@ class Roles extends Migration
                 'auto_increment' => true,
             ],
             'name' => [
-                'type'       => 'VARCHAR',
-                'constraint' => '20',
+                'type'       => 'ENUM',
+                'constraint' => ['ADMIN', 'USER', 'COLABORADOR'],
+                'default'    => 'USER',
+        
             ]
         ]);
         $this->forge->addKey('id', true);
