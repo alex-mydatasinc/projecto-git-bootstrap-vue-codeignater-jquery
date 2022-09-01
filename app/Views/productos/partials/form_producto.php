@@ -20,14 +20,14 @@
             <input type="number" class="form-control" placeholder="Asignele un titulo" v-model="producto.available_quantity">
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" v-if="btn == 0">
         <label for="">Imagen</label>
         <div class="d-flex flex-row">
             <input type="text" id="file" class="form-control mr-1" placeholder="Ingrese imagen" accept="image/*" v-model="add_image">
             <button type="button" class="btn btn-primary fa-duotone fa-plus" @click="img()"></button>
         </div>
     </div>
-    <div class="form-group d-flex flex-row bd-highlight mb-3 overflow-x">
+    <div class="form-group d-flex flex-row bd-highlight mb-3 overflow-x" v-if="btn == 0">
         <div v-for="(image,index) in images" class="position-relative">
             <div class="bg-danger px-2 position-absolute rounded-circle text-center d-flex align-items-center" @click="images.splice(index, 1)">x</div>
             <img id="picture" class="h-5 shadow-none p-1 bg-light rounded" vfor :src="image.source">
