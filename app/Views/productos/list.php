@@ -66,13 +66,12 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="6">
+                            <td colspan="6" id="pagination">
                                 <ul class="pagination float-right"></ul>
                             </td>
                         </tr>
                     </tfoot>
                 </table>
-
             </div>
         </div>
     </div>
@@ -98,7 +97,7 @@
                 },
                 add_image: '',
                 images: [],
-                btn: '',
+                btn: 0,
                 categorias: [],
                 atributos: [],
                 get_atributos: []
@@ -114,7 +113,8 @@
                     url: "<?= base_url('dashboard/get_productos'); ?>",
                     dataType: "json",
                     success: function(response) {
-                        producto_list.productos = response;
+                        producto_list.productos = response.productos;
+                        $('#pagination').append();
                         console.log(response);
                     }
                 });
@@ -163,54 +163,7 @@
                        console.log(response);
                     }
                 });
-            },
-            store_producto() {
-                var formData = new FormData($("#form_producto")[0]);
-                // console.log(formData);
-                // console.log(formData.get("atributo0"));
-                // console.log(formData.get("atributo1"));
-                this.get_atributos = [];
-                for (let [name, value] of formData) {
-
-                    // console.log(formData.get(`${name}`));
-                    let unit = $('#' + name + '-unit').val()
-                    console.log(unit)
-                    if (unit && value) {
-                        this.get_atributos.push({
-                            'id': name,
-                            'value_name': value + ' ' + unit
-                        })
-                    } else {
-                        if (value) {
-                            this.get_atributos.push({
-                                'id': name,
-                                'value_name': value
-                            })
-                        }
-                    }
-                }
-
-                console.log(this.get_atributos)
-                $.ajax({
-                    type: "post",
-                    url: "<?= base_url('dashboard/productos/store'); ?>",
-                    data: {
-                        'id': this.producto.id,
-                        'producto_id': this.producto.producto_id,
-                        'title': this.producto.title,
-                        'price': this.producto.price,
-                        'available_quantity': this.producto.available_quantity,
-                        'condition': this.producto.condition,
-                        'pictures': this.images,
-                        'category_id': this.producto.category_id,
-                        'attributes': this.get_atributos
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        console.log(response);
-                    }
-                });
-            },
+            },            
             update_producto() {
                 var formData = new FormData($("#form_producto")[0]);
                 this.get_atributos = [];

@@ -38,7 +38,9 @@ class ProductoController extends BaseController
     }
     public function list()
     {
-        return view('productos/list');
+        $productos = $this->model->where('status', 'active')->orWhere('status', 'paused')->paginate(10);
+        $data = ['productos' => $productos, 'pager' => $this->model->pager];
+        return view('productos/list', $data);
     }
     public function create()
     {
@@ -137,8 +139,8 @@ class ProductoController extends BaseController
 
     public function get_productos()
     {
-        $productos = $this->model->where('status', 'active')->orWhere('status', 'paused')->findAll();
-        return $this->response->setJSON($productos);
+        $productos = $this->model->where('status', 'active')->orWhere('status', 'paused')->paginate(10);
+        return $this->response->setJSON(['productos' => $productos, 'pager' => $this->model->pager]);
     }
     public function store_producto()
     {
