@@ -2,6 +2,10 @@
 
 <?= $this->section('content') ?>
 <div id="producto_vue">
+    <pre>
+    <?php echo json_encode(session()->role)?>
+    </pre>
+    
     <?= $this->include('productos/partials/nav');?>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -93,7 +97,7 @@
                         url: "<?= base_url('dashboard/get_productos'); ?>",
                         dataType: "json",
                         success: function(response) {
-                            producto_vue.productos = response;
+                            producto_vue.productos = response.productos;
                             console.log(response);
                         }
                     });

@@ -19,5 +19,6 @@ class UserSeeder extends Seeder
 
         // Using Query Builder
         $this->db->table('users')->insert($data);
+        $this->call('RolesSeeder');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
+use App\Models\Role;
 use App\Controllers\BaseController;
 
 class AuthController extends BaseController
@@ -21,14 +22,24 @@ class AuthController extends BaseController
         $session = session();
         $password = $this->request->getPost('password');
         $model = new UserModel();
+        $db      = \Config\Database::connect();
+        $builder = $db->table('users');
+        $builder->select('roles.name');
+        $builder->join('user_role', 'user_role.user_id = users.id', 'left');
+        $builder->join('roles', 'roles.id = user_role.role_id', 'left');
+        $query = $builder->get();
+        // print_r($query->getResultArray());
+
         $data = $model->where('email', $this->request->getPost('email'))->first();
         if ($data) {
             $pass = $data['password'];
             $verify_pass = password_verify($password, $pass);
             if ($verify_pass) {
                 $session_data = [
+                    'id' => $data['id'],
                     'name' => $data['name'],
                     'email' => $data['email'],
+                    'role' => $query->getResultArray() ,
                     'login_in' => true
                 ];
                 $session->set($session_data);
@@ -72,7 +83,7 @@ class AuthController extends BaseController
             echo view('register', $data);
         }
     }
-    
+
     public function logout()
     {
         $session = session();

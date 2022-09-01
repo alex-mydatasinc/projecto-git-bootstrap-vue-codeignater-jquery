@@ -28,7 +28,7 @@ class ProductoController extends BaseController
         // $this->token = '';
         $this->haeders = [
             'Accept'        => 'application/json',
-            'Authorization' => 'Bearer APP_USR-4332857485021545-083116-aa37a118db008a55dc224415b00d31d0-833930674',
+            'Authorization' => 'Bearer APP_USR-4332857485021545-090116-dd826487c8183177ecb357da2a42c182-833930674',
             'Content-Type' => 'application/json',
         ];
     }
@@ -53,7 +53,7 @@ class ProductoController extends BaseController
         $ch = curl_init($url);
         $headers = array(
             "Accept: application/json",
-            "Authorization: Bearer APP_USR-4332857485021545-083116-aa37a118db008a55dc224415b00d31d0-833930674",
+            "Authorization: Bearer APP_USR-4332857485021545-090116-dd826487c8183177ecb357da2a42c182-833930674",
         );
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -76,7 +76,7 @@ class ProductoController extends BaseController
             'secret' => 'BXQbMgaylwbml72KGRrBtkdQCsATIkAm',
             'user_id' => '833930674'
         ];
-        $token = 'Bearer APP_USR-4332857485021545-083116-aa37a118db008a55dc224415b00d31d0-833930674';
+        $token = 'Bearer APP_USR-4332857485021545-090116-dd826487c8183177ecb357da2a42c182-833930674';
         $haeders = [
             'headers' => [
                 'Accept'        => 'application/json',
@@ -87,7 +87,7 @@ class ProductoController extends BaseController
         $model->emptyTable('productos');
 
         $ini = 0;
-        $fin = 100;
+        $fin = 99;
         $totalpaging = ceil((($this->paginar($ini, $fin)->paging->total) / 100));
 
         for ($i = 0; $i < $totalpaging; $i++) {
@@ -128,7 +128,7 @@ class ProductoController extends BaseController
                 }
             }
 
-            $ini = $fin;
+            $ini = $fin +1;
             $fin = $fin + 100;
         }
 

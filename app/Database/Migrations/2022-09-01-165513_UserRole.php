@@ -18,12 +18,10 @@ class UserRole extends Migration
                 'type'           => 'INT',
                 'constraint'     => 5,
                 'unsigned'       => TRUE
-
-
-            ]
+            ],
         ]);
-        $this->forge->addForeignKey('user_id', users, 'id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('role_id', roles, 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('role_id', 'roles', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('user_role');
     }
 

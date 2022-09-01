@@ -43,6 +43,7 @@
             </div>
             <div class="col-md-6">
                 <div class="ibox-content">
+                    <?php session()->msg?>
                     <form class="m-t" role="form" @submit.prevent="submit_login()">
                         <div class="form-group">
                             <input type="email" class="form-control" placeholder="Username" required="" v-model="user.email">
