@@ -48,8 +48,6 @@
     <script src="/assets/js/plugins/pace/pace.min.js"></script>
     <!-- <script type="text/javascript" src="/assets/js/producto.js"></script> -->
     
-
-
 </body>
 
 </html>

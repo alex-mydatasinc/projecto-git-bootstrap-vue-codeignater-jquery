@@ -22,15 +22,20 @@ class AuthController extends BaseController
         $session = session();
         $password = $this->request->getPost('password');
         $model = new UserModel();
+        
+        
+
+        $data = $model->where('email', $this->request->getPost('email'))->first();
+
         $db      = \Config\Database::connect();
         $builder = $db->table('users');
+        $builder->where('users.id', $data['id']);
         $builder->select('roles.name');
         $builder->join('user_role', 'user_role.user_id = users.id', 'left');
         $builder->join('roles', 'roles.id = user_role.role_id', 'left');
         $query = $builder->get();
-        // print_r($query->getResultArray());
 
-        $data = $model->where('email', $this->request->getPost('email'))->first();
+        // print_r($query->getResultArray());
         if ($data) {
             $pass = $data['password'];
             $verify_pass = password_verify($password, $pass);
@@ -39,7 +44,7 @@ class AuthController extends BaseController
                     'id' => $data['id'],
                     'name' => $data['name'],
                     'email' => $data['email'],
-                    'role' => $query->getResultArray() ,
+                    'role' => $query->getResultArray(),
                     'login_in' => true
                 ];
                 $session->set($session_data);
